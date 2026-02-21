@@ -1,0 +1,9 @@
+[hiddenAction_黑障之境]
+autoTrigger: if numberOfUnitsInTeam(withTag='黑障', greaterThan=0, withinRange=320)
+addAllActionCooldownsTime: 30s
+convertTo: 
+sendMessageTo: ${ConvertUpdate1}
+sendMessageWithTags: ${ConvertUpdate2}
+temporarilyAddTags: 虚无之态, 不会受伤
+convertTo_keepCurrentTags: true
+alsoTriggerAction: 属性变化

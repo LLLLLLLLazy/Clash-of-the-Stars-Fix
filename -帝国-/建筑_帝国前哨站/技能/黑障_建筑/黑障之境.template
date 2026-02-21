@@ -1,0 +1,16 @@
+[core]
+#copyFrom: ROOT:/
+#name: 黑障_
+#displayText: 
+showInEditor: false
+
+isPickableStartingUnit: false
+showOnMinimap: false
+canNotBeDamaged: true
+
+[hiddenAction_黑障之境]
+autoTrigger: if not numberOfUnitsInTeam(withTag='黑障', greaterThan=0, withinRange=320)
+addAllActionCooldownsTime: 0s
+convertTo: 
+sendMessageTo: ${ConvertUpdate1}
+sendMessageWithTags: ${ConvertUpdate2}

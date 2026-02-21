@@ -1,0 +1,41 @@
+[core]
+copyFrom: ROOT:/单位全局模板, ROOT:/代码全局模板
+
+@memory 腐蚀价格:float
+@memory 狂猎时刻生产加速:boolean
+
+[action_狂猎时刻效果]
+isActive: false
+isVisible: if self.globalTeamTags(includes='狂猎时刻')
+requireConditional: if not eventSource.self.tags(includes="召唤物") and self.globalTeamTags(includes='狂猎时刻')
+autoTriggerOnEvent: killedAnyUnit
+id: 狂猎时刻效果
+text: 狂猎时刻
+description: -移动速度提升50% \n -击杀增长目标[价格25%|腐蚀80%]的腐蚀 \n -十倍生产速度
+pos: 0
+displayType: infoOnlyStockpile
+buildSpeed: 0s
+iconImage: ROOT:/素材/狂猎时刻.png
+isGuiBlinking: true
+addResourcesWithLogic: 腐蚀=eventSource.priceCredits*0.25 + eventSource.readUnitMemory('腐蚀价格', type='float')*0.8
+
+[hiddenAction_狂猎时刻生产加速]
+autoTrigger: if self.globalTeamTags(includes='狂猎时刻') and memory.狂猎时刻生产加速!=true
+setUnitMemory: 属性[33]=memory.属性[33]+9, 狂猎时刻生产加速=true
+alsoTriggerAction: 属性变化
+
+[hiddenAction_狂猎时刻生产恢复]
+autoTrigger: if not self.globalTeamTags(includes='狂猎时刻') and memory.狂猎时刻生产加速==true
+setUnitMemory: 属性[33]=memory.属性[33]-9, 狂猎时刻生产加速=false
+alsoTriggerAction: 属性变化
+
+[hiddenAction_永生之物资源]
+autoTriggerOnEvent: newMessage(withTag='数据更新')
+addResourcesWithLogic: 永生之物=eventData('永生之物',type='float')
+
+[resource_永生之物]
+displayName: 永生之物
+
+
+[global_resource_玩家总数]
+displayName: 玩家总数

@@ -1,0 +1,10 @@
+
+
+[template_skill]
+whenBuilding_temporarilyConvertTo: 大恶魔[二形-蓄力]
+
+[action_赤3]
+whenBuilding_temporarilyConvertTo: 大恶魔[二形-蓄力飞]
+
+[graphics]
+image: 战损装甲.png

@@ -1,0 +1,28 @@
+[core]
+name: ${field}
+tags: ${tag}, ${field}
+
+@global field: 
+
+[decal_光]
+@define image: 
+layer: onTop
+image: 贴图/${image}.png
+alpha: 0.2/max(numberOfUnitsInAllTeams(withTag='${field}', withinRange=1000), 1)
+imageScale: 15
+basePositionFromLegEnd: arm_1
+
+[arm_1]
+x: 0
+y: 0
+spinRate: 0.1
+
+[graphics]
+image: 贴图/大空.png
+
+[attack]
+maxAttackRange: 1700
+showRangeUIGuide: true
+
+[movement]
+movementType: AIR

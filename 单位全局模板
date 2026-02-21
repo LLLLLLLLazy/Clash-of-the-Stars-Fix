@@ -1,0 +1,142 @@
+
+[core]
+#——核心数据——
+strictLevel: 1
+
+defineUnitMemory: float[] 属性, boolean 建筑
+
+#——单位基础值——
+maxHp: 0
+mass: 0
+maxShield: 0
+shieldRegen: 0.25
+nanoFactorySpeed: 1
+fogOfWarSightRange: 15
+armour: 0
+isBuilding: false
+
+[attack]
+maxAttackRange: 0
+
+[movement]
+moveSpeed: 1
+maxTurnSpeed: 1
+
+[hiddenAction_基本单位设定]
+autoTriggerOnEvent: created
+setUnitMemory: 建筑=${core.isBuilding}
+alsoTriggerAction: 属性改变设定
+
+#——全局资源——
+
+[global_resource_基因种子]
+displayName: 基因种子
+
+[global_resource_新能魔素]
+displayName: 新能魔素
+
+[global_resource_腐蚀]
+displayName: 腐蚀
+
+[global_resource_苍蓝能量]
+displayName: 苍蓝能量
+
+[global_resource_废料]
+displayName: 废料
+
+
+[resource_减血倍率]
+displayName: 减血倍率
+
+#——虚空——
+
+[resource_虚空]
+displayName: 虚空
+
+[hiddenAction_虚空]
+autoTrigger: if self.resource(type='虚空')>=1
+deleteSelf: true
+
+#——运输——
+
+[hiddenAction_$运输]
+autoTriggerOnEvent: newMessage(withTag='运输')
+addWaypoint_type: loadInto
+addWaypoint_prepend: true
+addWaypoint_target_fromReference: eventSource
+
+#——属性变化——
+
+[hiddenAction_属性改变设定]
+autoTriggerOnEvent: newMessage(withTag='数据更新')
+setUnitMemory: 属性[41]=0
+alsoTriggerAction: 属性变化
+
+[hiddenAction_属性变化]
+setUnitMemory: """
+属性[12]=memory.属性[12]+eventData('血量加值',type='float'),
+属性[27]=memory.属性[27]+eventData('血量倍率',type='float'),
+属性[28]=memory.属性[28]+eventData('护盾倍率',type='float'),
+属性[35]=memory.属性[35]+eventData('移速倍率',type='float'),
+属性[2]=memory.属性[2]+eventData('攻速倍率',type='float'),
+属性[3]=memory.属性[3]+eventData('伤害倍率',type='float'),
+属性[55]=memory.属性[55]+eventData('射程加值',type='float'),
+
+属性[39]=memory.属性[39]+eventData('护盾恢复乘数',type='float'),
+属性[40]=memory.属性[40]+eventData('攻速倍率乘数',type='float'),
+属性[42]=memory.属性[42]+eventData('转向速度乘数',type='float'),
+属性[43]=memory.属性[43]+eventData('生产速度乘数',type='float'),
+属性[45]=memory.属性[45]+eventData('移速乘数',type='float'),
+
+属性[10]=self.maxHp,
+属性[11]=self.maxShield,
+属性[7]=(${movement.moveSpeed}+memory.属性[24]),
+属性[1]=(${core.shieldRegen}+memory.属性[17]),
+属性[4]=${attack.maxAttackRange}+memory.属性[20]+memory.属性[55],
+属性[5]=(${movement.maxTurnSpeed}+memory.属性[21]) * max((1+memory.属性[42]), 0),
+属性[6]=${core.nanoFactorySpeed}+memory.属性[22],
+属性[8]=${core.fogOfWarSightRange}+memory.属性[25],
+属性[9]=${core.armour}+memory.属性[26]
+"""
+
+
+setUnitStats: """
+maxHp=(${core.maxHp} + memory.属性[14] + memory.属性[12]) * (1+memory.属性[27]),
+maxShield=(${core.maxShield} + memory.属性[15]) * (1+memory.属性[28]),
+hp=self.hp * select(memory.属性[10]!=0, (self.maxHp / (memory.属性[10])), 1),
+shield=self.shield * select(memory.属性[11]!=0, (self.maxShield / (memory.属性[11])), 1),
+shootDelayMultiplier=1 / ( ( 1 + max(memory.属性[2] + memory.属性[18], -0.9) * max((1+memory.属性[41]), 0) ) * max((1+memory.属性[40]), 0)),
+shootDamageMultiplier=1 + (memory.属性[3] + memory.属性[19]),
+shieldRegen=memory.属性[1] * max((1+memory.属性[39]), 0),
+moveSpeed=memory.属性[7] * max((1+memory.属性[35]), 0.1) * max((1+memory.属性[45]), 0),
+maxAttackRange=memory.属性[4],
+nanoFactorySpeed=memory.属性[6] * (1+memory.属性[33]) * max((1+memory.属性[43]), 0),
+maxTurnSpeed=(memory.属性[5]),
+fogOfWarSightRange=memory.属性[8],
+armour=memory.属性[9]
+"""
+
+
+[hiddenAction_减血倍率]
+autoTrigger: if self.resource.减血倍率!=0
+setResourcesWithLogic: hp=self.hp-self.maxHp*self.resource.减血倍率, 减血倍率=0
+
+
+
+[hiddenAction_时间暂停]
+autoTriggerOnEvent: newMessage(withTag='时间暂停')
+addAllActionCooldownsTime: 16.3s
+
+
+
+
+[action_深渊之息]
+isActive:false
+isVisible: if numberOfUnitsInEnemyTeam(withTag='利维坦')>0
+isGuiBlinking: true
+pos: -9
+id: 深渊之息
+text: 深渊之息
+description: -每秒损失50+最大血量1%
+buildSpeed: 0
+iconImage: ROOT:/素材/水团.png

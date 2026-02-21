@@ -1,0 +1,25 @@
+[core]
+copyFrom: ROOT:/代码全局模板
+strictLevel: 1
+
+#——全局资源——
+
+[global_resource_玩家总数]
+displayName: 玩家总数
+
+[global_resource_腐蚀]
+hidden: false
+displayName: 腐蚀
+displayColor: #00FFF7
+displayRoundedDown: true
+priority: 0.6
+
+#——虚空——
+
+[resource_虚空]
+displayName: 虚空
+displayColor: #000000
+
+[hiddenAction_虚空]
+autoTrigger: if self.resource(type='虚空',greaterThan=0.99)
+deleteSelf: true

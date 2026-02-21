@@ -1,0 +1,17 @@
+[core]
+isBuilding: true
+isPickableStartingUnit: true
+
+tags: ${basicTag} ${tag}
+@define basicTag: units, 阵营选择, 不会受伤
+@define tag:, 
+
+energyMax: 15
+energyRegen: 0.01666
+energyStartingPercentage: 0
+
+
+[hiddenAction_设定完成]
+autoTriggerOnEvent: created
+convertTo: 阵营选择
+convertTo_keepCurrentTags: true

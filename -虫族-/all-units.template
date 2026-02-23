@@ -103,20 +103,29 @@ takeResources_triggerActionForEach: AIGroundSend
 takeResources_searchOnly: true
 
 [hiddenAction_AIGroundSend]
-requireConditional: if thisActionTarget!=self and thisActionTarget.readUnitMemory("建筑", type='boolean')==false and not thisActionTarget.tags(includes='AI残血撤退')
+requireConditional: if thisActionTarget!=self and thisActionTarget.readUnitMemory("建筑", type='boolean')==false and not thisActionTarget.tags(includes='AI残血撤退') and not thisActionTarget.tags(includes='AI仅对空')
 sendMessageTo: thisActionTarget
 sendMessageWithTags: AIGroundHelp
 
 [hiddenAction_AIGroundResp]
 autoTriggerOnEvent: newMessage(withTag='AIGroundHelp')
-requireConditional: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and eventSource!=nullUnit and distanceBetween(self, eventSource)<800 and memory.建筑!=true and not self.tags(includes='AI残血撤退') and not self.hasActiveWaypoint(type='build')
+requireConditional: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and eventSource!=nullUnit and distanceBetween(self, eventSource)<800 and memory.建筑!=true and not self.tags(includes='AI残血撤退') and not self.tags(includes='AI仅对空') and not self.hasActiveWaypoint(type='build')
 addWaypoint_type: guard
 addWaypoint_prepend: true
 addWaypoint_maxTime: 10s
 addWaypoint_target_fromReference: eventSource
 
+[hiddenAction_AIAirFocusAntiAir]
+autoTrigger: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and self.isFlying and not self.tags(includes='AI仅对空') and not self.tags(includes='AI残血撤退') and not self.tags(includes='一次性建造') and memory.建筑!=true and not self.hasActiveWaypoint(type='build') and (self.globalTeamTags(includes='AI爆发') or self.isAttacking or self.hasActiveWaypoint(type='attack') or self.hasActiveWaypoint(type='attackMove') or self.hasActiveWaypoint(type='guard')) and numberOfUnitsInEnemyTeam(withTag='units', greaterThan=0, withinRange=620) and (numberOfUnitsInEnemyTeam(withTag='炮塔', greaterThan=0, withinRange=620) or numberOfUnitsInEnemyTeam(withTag='防空兵', greaterThan=0, withinRange=620) or numberOfUnitsInEnemyTeam(withTag='防空塔', greaterThan=0, withinRange=620) or numberOfUnitsInEnemyTeam(withTag='武装防空兵', greaterThan=0, withinRange=620) or numberOfUnitsInEnemyTeam(withTag='帝国防空兵', greaterThan=0, withinRange=620) or numberOfUnitsInEnemyTeam(withTag='流云防空车', greaterThan=0, withinRange=620) or numberOfUnitsInEnemyTeam(withTag='重型防空舰', greaterThan=0, withinRange=620) or numberOfUnitsInEnemyTeam(withTag='电机枪塔', greaterThan=0, withinRange=620) or numberOfUnitsInEnemyTeam(withTag='T3机枪', greaterThan=0, withinRange=620))
+addWaypoint_type: attack
+addWaypoint_prepend: true
+addWaypoint_maxTime: 6s
+addWaypoint_target_nearestUnit_tagged: 防空虫塔T2, 防空虫塔, 皎红防空塔, 防空塔, 防空兵, 武装防空兵, 帝国防空兵, 流云防空车, 重型防空舰, 炮塔, 炮塔T2, 中心防御对地, 电机枪塔, T3机枪
+addWaypoint_target_nearestUnit_team: enemy
+addWaypoint_target_mapMustBeReachable: false
+
 [hiddenAction_AIFocusHighValue]
-autoTrigger: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and (self.isAttacking or self.hasActiveWaypoint(type='attack') or self.hasActiveWaypoint(type='guard')) and numberOfUnitsInEnemyTeam(withTag='units', greaterThan=0, withinRange=480) and not self.tags(includes='AI残血撤退') and memory.建筑!=true and not self.hasActiveWaypoint(type='build')
+autoTrigger: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and not self.isFlying and (self.isAttacking or self.hasActiveWaypoint(type='attack') or self.hasActiveWaypoint(type='guard')) and numberOfUnitsInEnemyTeam(withTag='units', greaterThan=0, withinRange=480) and not self.tags(includes='AI残血撤退') and not self.tags(includes='AI仅对空') and memory.建筑!=true and not self.hasActiveWaypoint(type='build')
 addWaypoint_type: attack
 addWaypoint_prepend: true
 addWaypoint_maxTime: 7s
@@ -141,7 +150,7 @@ sendMessageWithTags: AIFocusAttack
 
 [hiddenAction_AIFocusResp]
 autoTriggerOnEvent: newMessage(withTag='AIFocusAttack')
-requireConditional: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and eventSource!=nullUnit and distanceBetween(self, eventSource)<600 and memory.建筑!=true and not self.tags(includes='AI残血撤退') and not self.hasActiveWaypoint(type='build')
+requireConditional: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and eventSource!=nullUnit and distanceBetween(self, eventSource)<600 and memory.建筑!=true and not self.tags(includes='AI残血撤退') and not self.tags(includes='AI仅对空') and not self.hasActiveWaypoint(type='build')
 addWaypoint_type: guard
 addWaypoint_prepend: true
 addWaypoint_maxTime: 6s
@@ -199,7 +208,7 @@ addWaypoint_maxTime: 12s
 addWaypoint_target_nearestUnit_tagged: 资源提取器, 虫飞巢, 虫巢, 母巢, 母巢T2, 基地
 addWaypoint_target_nearestUnit_team: enemy
 addWaypoint_target_mapMustBeReachable: false
-autoTrigger: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and self.globalTeamTags(includes='AI爆发') and memory.建筑!=true and not self.isAttacking and not self.hasActiveWaypoint(type='build') and (numberOfUnitsInEnemyTeam(withTag='资源提取器', greaterThan=0, withinRange=980) or numberOfUnitsInEnemyTeam(withTag='基地', greaterThan=0, withinRange=1000)) and (numberOfUnitsInEnemyTeam(withTag='炮塔', lessThan=1, withinRange=420) or self.globalTeamTags(includes='后界{I}'))
+autoTrigger: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and self.globalTeamTags(includes='AI爆发') and memory.建筑!=true and not self.tags(includes='AI仅对空') and not self.isAttacking and not self.hasActiveWaypoint(type='build') and (numberOfUnitsInEnemyTeam(withTag='资源提取器', greaterThan=0, withinRange=980) or numberOfUnitsInEnemyTeam(withTag='基地', greaterThan=0, withinRange=1000)) and (numberOfUnitsInEnemyTeam(withTag='炮塔', lessThan=1, withinRange=420) or self.globalTeamTags(includes='后界{I}'))
 
 [hiddenAction_AIa6]
 addWaypoint_type: attackMove
@@ -208,4 +217,4 @@ addWaypoint_maxTime: 13s
 addWaypoint_target_nearestUnit_tagged: 资源提取器, 虫飞巢, 虫巢
 addWaypoint_target_nearestUnit_team: enemy
 addWaypoint_target_mapMustBeReachable: false
-autoTrigger: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and self.globalTeamTags(includes='AI爆发') and memory.建筑!=true and not self.isAttacking and not self.hasActiveWaypoint(type='build') and numberOfUnitsInTeam(withTag='units', greaterThan=4, withinRange=320) and numberOfUnitsInEnemyTeam(withTag='资源提取器', greaterThan=0, withinRange=900) and numberOfUnitsInEnemyTeam(withTag='炮塔', lessThan=1, withinRange=420)
+autoTrigger: if self.globalTeamTags(includes='AI系统') and not self.globalTeamTags(includes='皎红') and self.globalTeamTags(includes='AI爆发') and memory.建筑!=true and not self.tags(includes='AI仅对空') and not self.isAttacking and not self.hasActiveWaypoint(type='build') and numberOfUnitsInTeam(withTag='units', greaterThan=4, withinRange=320) and numberOfUnitsInEnemyTeam(withTag='资源提取器', greaterThan=0, withinRange=900) and numberOfUnitsInEnemyTeam(withTag='炮塔', lessThan=1, withinRange=420)
